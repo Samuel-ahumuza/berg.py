@@ -1,8 +1,7 @@
 '''
-
-    A PYTHON PROGRAM ALLOWING AN INSTRUCTOR TO ENTER A MARK STRICTLY BTN 0 & 100 THEN SHOWING GRADES.
-    '''
-print("wecome to the grading scale")
+A PYTHON PROGRAM ALLOWING AN INSTRUCTOR TO ENTER A MARK STRICTLY BTN 0 & 100 THEN SHOWING GRADES.
+'''
+print("welcome to the grading scale")
 "mark"  (input ("please enter mark between 0 and 100"))
 
 if  "mark" >=100:
@@ -24,4 +23,4 @@ elif "mark" >=30:
 elif "mark" >=20:
     print("F")
 else:
-    print("invalid, please enter mark")
+    print("invalid, please enter mark between 0 and 100")
