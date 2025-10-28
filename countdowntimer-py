@@ -1,0 +1,34 @@
+import time
+import sys
+
+def countdown(t):
+    # Print an initial message
+    print("Starting countdown...")
+    time.sleep(1)
+
+    while t >= 0:
+        # Calculate minutes and seconds from total seconds (t)
+        # divmod(t, 60) returns (t // 60, t % 60) -> (minutes, seconds)
+        mins, secs = divmod(t, 60)
+        
+        # Format the time as MM:SS (e.g., 00:10)
+        timer = f'{mins:02d}:{secs:02d}'
+        
+        # Use sys.stdout.write and '\r' to print the time on the same line
+        # '\r' (carriage return) moves the cursor to the start of the line
+        sys.stdout.write('\r' + timer)
+        sys.stdout.flush() # Forces the display to update immediately
+        
+        time.sleep(1) # Pause for 1 second
+        t -= 1 # Decrement the timer
+
+    # Final message after the loop finishes
+    print('\nTIME IS UP! 🎉')
+
+# --- Main Execution ---
+
+# Set the initial time in seconds (e.g., 10 seconds for a quick test)
+initial_time = 50
+
+if __name__ == "__main__":
+    countdown(initial_time)
