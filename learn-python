@@ -1,0 +1,41 @@
+def generate_python_function(function_name, arguments, body_lines):
+    """
+    Generates a Python function as a string.
+
+    Args:
+        function_name (str): The name of the function.
+        arguments (list): A list of strings representing the function arguments.
+        body_lines (list): A list of strings representing the lines in the function body.
+
+    Returns:
+        str: A string containing the generated Python function.
+    """
+    indent = "    "  # 4 spaces for indentation
+    arg_string = ", ".join(arguments)
+    function_code = f"def {function_name}({arg_string}):\n"
+
+    for line in body_lines:
+        function_code += f"{indent}{line}\n"
+
+    return function_code
+
+# Example usage:
+if __name__ == "__main__":
+    # Define the function details
+    name = "greet_user"
+    args = ["name"]
+    body = [
+        'message = f"Hello, {name}!"',
+        'print(message)',
+        'return message'
+    ]
+
+    # Generate the function code
+    generated_code = generate_python_function(name, args, body)
+    print("Generated Python Code:")
+    print(generated_code)
+
+    # You can then execute this generated code if needed
+    # (Note: Executing arbitrary code from user input can be a security risk)
+    # exec(generated_code)
+    # greet_user("Alice")
