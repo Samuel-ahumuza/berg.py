@@ -1,0 +1,172 @@
+//This version uses the Python built-in csv module to save and load the stock data from a file named stock_inventory.csv.
+
+//Code Overview
+//The core functions now include:
+
+//load_stock(): Reads the CSV file when the program starts.
+
+//save_stock(): Writes the updated stock back to the CSV file after every change.
+
+//run_supermarket_system(): The main loop that calls the functions and manages the user interface.
+
+import time
+import csv
+import os
+
+# Define the filename for the persistent data
+CSV_FILE = 'stock_inventory.csv'
+# Global variable to hold the stock data in memory
+stock = {}
+
+def load_stock():
+    """Loads stock data from the CSV file into the global 'stock' dictionary."""
+    global stock
+    stock = {}
+    
+    # Check if the file exists. If not, we start with empty stock.
+    if not os.path.exists(CSV_FILE):
+        print("🗄️ No existing inventory file found. Starting with a fresh stock list.")
+        return
+    
+    try:
+        with open(CSV_FILE, mode='r', newline='') as file:
+            reader = csv.reader(file)
+            # Skip the header row (Product, Quantity)
+            next(reader) 
+            for row in reader:
+                if len(row) == 2:
+                    # Convert quantity from string to integer
+                    product_name = row[0]
+                    quantity = int(row[1])
+                    stock[product_name] = quantity
+        print(f"✅ Loaded {len(stock)} items from {CSV_FILE}.")
+    except Exception as e:
+        print(f"❌ Error loading stock from file: {e}. Starting with empty stock.")
+        stock = {}
+
+def save_stock():
+    """Saves the current stock data from memory to the CSV file."""
+    try:
+        with open(CSV_FILE, mode='w', newline='') as file:
+            writer = csv.writer(file)
+            # Write header row
+            writer.writerow(["Product", "Quantity"])
+            # Write all products and their quantities
+            for product, quantity in stock.items():
+                writer.writerow([product, quantity])
+        print(f"💾 Stock successfully saved to {CSV_FILE}.")
+    except Exception as e:
+        print(f"❌ Error saving stock to file: {e}")
+
+def display_stock():
+    """Displays the current stock levels of all products."""
+    print("\n" + "="*40)
+    print("      🏪 Current Stock Availability")
+    print("="*40)
+    
+    # Handle the case where stock is empty
+    if not stock:
+        print("--- Inventory is currently empty. ---")
+    else:
+        # Using a list comprehension to format the output neatly
+        print("\n".join(f"{product}: **{quantity}** units" for product, quantity in stock.items()))
+        
+    print("="*40)
+
+def restock_item(product_name, quantity_added):
+    """Adds stock (Input) to a product."""
+    product_name = product_name.capitalize() # Standardize capitalization
+    
+    if product_name in stock:
+        stock[product_name] += quantity_added
+        print(f"✅ RESTOCK SUCCESS: Added {quantity_added} units of {product_name}.")
+    else:
+        # If the product is new, add it to the dictionary
+        stock[product_name] = quantity_added
+        print(f"✅ NEW ITEM ADDED: {product_name} added with initial stock of {quantity_added} units.")
+        
+    save_stock() # Save changes to the CSV file
+
+def record_sale(product_name, quantity_sold):
+    """Records a sale (Output) and updates stock."""
+    product_name = product_name.capitalize() # Standardize capitalization
+    
+    if product_name not in stock:
+        print(f"❌ ERROR: Product '{product_name}' is not tracked in the inventory.")
+        return
+
+    if stock[product_name] >= quantity_sold:
+        stock[product_name] -= quantity_sold
+        print(f"✅ SALE SUCCESS: Sold {quantity_sold} units of {product_name}.")
+        
+        # Check for low stock alert
+        if stock[product_name] < 10 and stock[product_name] > 0:
+            print(f"⚠️ LOW STOCK ALERT! {product_name} is now at {stock[product_name]} units.")
+        elif stock[product_name] == 0:
+             print(f"🚨 OUT OF STOCK ALERT! {product_name} is now completely sold out.")
+             
+        save_stock() # Save changes to the CSV file
+    else:
+        print(f"❌ ERROR: Cannot sell {quantity_sold} units of {product_name}. Only {stock[product_name]} available.")
+
+
+def run_supermarket_system():
+    """The main loop to run the stock management system 24/7."""
+    
+    print("🛒 Starting Supermarket Stock Management System...")
+    # --- IMPORTANT: Load data on startup ---
+    load_stock() 
+    time.sleep(1) # Pause for a moment
+
+    while True:
+        display_stock()
+
+        # Display menu options
+        print("\n--- Available Actions ---")
+        print("1: **Restock** (Add stock Input)")
+        print("2: **Record Sale** (Subtract stock Output)")
+        print("3: **Exit** system")
+        
+        action = input("Enter your choice (1, 2, or 3): ").strip()
+
+        try:
+            if action == '1':
+                # --- Restock Action ---
+                print("\n--- RESTOCK MODE ---")
+                product = input("Enter product name to restock: ").strip()
+                quantity = int(input("Enter quantity to add: ").strip())
+                if quantity > 0:
+                    restock_item(product, quantity)
+                else:
+                    print("⚠️ Quantity must be a positive number.")
+
+            elif action == '2':
+                # --- Sale Action ---
+                print("\n--- SALE MODE ---")
+                product = input("Enter product name sold: ").strip()
+                quantity = int(input("Enter quantity sold: ").strip())
+                if quantity > 0:
+                    record_sale(product, quantity)
+                else:
+                    print("⚠️ Quantity must be a positive number.")
+
+            elif action == '3':
+                # --- Exit Action ---
+                print("\n👋 System shutting down. Your latest changes are saved!")
+                break
+            
+            else:
+                print("❌ Invalid choice. Please enter 1, 2, or 3.")
+
+        except ValueError:
+            print("❌ Invalid input. Please ensure quantity is a whole number.")
+        except Exception as e:
+            print(f"An unexpected error occurred: {e}")
+        
+        # Wait a moment before looping again
+        print("\n" + "*"*40)
+        input("Press Enter to continue/view updated stock...")
+        
+# Execute the main function
+if __name__ == "__main__":
+    run_supermarket_system()
