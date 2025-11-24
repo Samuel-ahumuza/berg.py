@@ -4,9 +4,9 @@ import time
 stock = {
     "Milk": 150,
     "Bread": 200,
-    "Eggs": 100,
-    "Apples": 50,
-    "Chicken": 75
+    "Eggs": 4565,
+    "Apples": 1000,
+    "Chicken": 97
 }
 
 def display_stock():
