@@ -7,7 +7,7 @@ def run_chatbot():
 
     name = input("1. Enter your secret agent codename: ")
     color = input("2. What is your favorite color? ")
-    pet = input("3. What's a funny, weird animal (e.g., penguin, sloth, tapir)? ")
+    pet = input("3. What's a funny, weird animal (e.g., penguin, sloth, tapir, panda)? ")
 
     # --- Part 2: Generate Fortune ---
     print("\nCalculating your destiny...")
